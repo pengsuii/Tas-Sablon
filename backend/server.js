@@ -1,13 +1,16 @@
 const express = require('express');
 const mysql = require('mysql');
-const path = require('path');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
 const port = 3000;
 
 // Middleware untuk parsing JSON
 app.use(bodyParser.json());
+
+// Middleware untuk CORS
+app.use(cors());
 
 // Konfigurasi koneksi ke database MySQL
 const db = mysql.createConnection({
@@ -39,7 +42,20 @@ app.post('/testimoni', (req, res) => {
     });
 });
 
+// Rute untuk mengambil data dari tabel 'testimoni'
+app.get('/testimoni', (req, res) => {
+    const query = 'SELECT * FROM testimoni';
+    
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error fetching testimonials:', err);
+            return res.status(500).json({ error: err.message });
+        }
+        res.status(200).json(results);
+    });
+});
 
+// Menjalankan server
 app.listen(port, () => {
     console.log(`Server berjalan di http://localhost:${port}`);
 });
