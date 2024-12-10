@@ -14,13 +14,61 @@ import { FaArrowUpRightFromSquare } from "react-icons/fa6";
 const HomePage = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [review, setReview] = useState('');
+  const [customerName, setCustomerName] = useState('');
+  const [testimonials, setTestimonials] = useState([]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsVisible(true); 
-    }, 500);
+    const timer = setTimeout(() => setIsVisible(true), 500);
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    fetch('http://localhost:3000/testimoni')
+      .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+      })
+      .then(data => setTestimonials(data))
+      .catch(error => console.error('Error fetching testimonials:', error));
+  }, []);
+
+  const handleReviewChange = (e) => setReview(e.target.value);
+  const handleNameChange = (e) => setCustomerName(e.target.value);
+
+  const handleReviewSubmit = () => {
+    const forbiddenWords = ['anjing', 'babi', 'jelek'];
+    const containsForbiddenWord = forbiddenWords.some(word => review.includes(word));
+
+    if (containsForbiddenWord) {
+      alert('Review Anda mengandung kata yang tidak diperbolehkan.');
+      return;
+    }
+    if (!review) {
+      alert('Masukkan review Anda terlebih dahulu');
+      return;
+    }
+    if (!customerName) {
+      alert('Masukkan nama Anda terlebih dahulu');
+      return;
+    }
+
+    fetch('http://localhost:3000/testimoni', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nama_pengguna: customerName, isi_testimoni: review }),
+    })
+    .then(response => {
+      if (!response.ok) throw new Error('Network response was not ok');
+      return response.json();
+    })
+    .then(data => {
+      setTestimonials([...testimonials, data]);
+      setReview('');
+      setCustomerName('');
+    })
+    .catch(error => console.error('Error submitting review:', error));
+  };
 
   return (
     <div className="homepage">
@@ -34,28 +82,28 @@ const HomePage = () => {
               <p style={{ fontWeight: 'inherit', fontSize: '17px' }}>
                 Sablon Custom, Kualitas Premium - Buat Ceritamu Tertulis di Setiap Tas
               </p>
-              <a href="https://forms.gle/nd9iVMCNTuX1nPWc7"target="_blank" rel="noopener noreferrer">
-              <button
-                onMouseEnter={() => setIsHovered(true)} 
-                onMouseLeave={() => setIsHovered(false)}
-                style={{
-                  backgroundColor: isHovered ? '#7A5A3B' : '#A68B5B',
-                  padding: '10px 12px',
-                  width: '133px',
-                  height: '48px',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  border: 'none',
-                  borderRadius: '8px',
-                  color: '#FAFAFA',
-                  fontSize: '14px',
-                  fontWeight: 'inherit',
-                  transition: 'background-color 0.5s'
-                }}
-              >
-                Pesan Sekarang
-              </button>
+              <a href="https://forms.gle/nd9iVMCNTuX1nPWc7" target="_blank" rel="noopener noreferrer">
+                <button
+                  onMouseEnter={() => setIsHovered(true)} 
+                  onMouseLeave={() => setIsHovered(false)}
+                  style={{
+                    backgroundColor: isHovered ? '#7A5A3B' : '#A68B5B',
+                    padding: '10px 12px',
+                    width: '133px',
+                    height: '48px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    border: 'none',
+                    borderRadius: '8px',
+                    color: '#FAFAFA',
+                    fontSize: '14px',
+                    fontWeight: 'inherit',
+                    transition: 'background-color 0.5s'
+                  }}
+                >
+                  Pesan Sekarang
+                </button>
               </a>
             </Col>
             <Col xs={12} md={6} style={{ display: 'flex', justifyContent: 'flex-end', marginLeft: '170px', marginTop: '-100px' }}>
@@ -167,6 +215,52 @@ const HomePage = () => {
                   <p>Menggunakan material terbaik dan sablon awet untuk hasil maksimal yang tahan lama.</p>
                 </div>
               </div>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+      <div className="review-section w-100 min-vh-50 mt-5" style={{ marginLeft: '-150px' }}>
+        <Container>
+          <Row>
+            <Col style={{ textAlign: 'left' }}>
+              <h1 style={{ fontWeight: 'bold', marginBottom:'50px' }}>Tinggalkan Review Anda</h1>
+              <div style={{ 
+                  marginBottom: '10px', 
+                  padding: '10px', 
+                  border: '1px solid #A68B5B', 
+                  borderRadius: '8px', 
+                  backgroundColor: '#fff', 
+                  maxHeight: '150px',
+                  overflowY: 'auto',
+                  scrollbarWidth: 'thin',
+                  scrollbarColor: '#A68B5B transparent'
+                }} className="review-scroll">
+                {testimonials.map((testimonial, index) => (
+                    <p key={testimonial.id || index}>
+                        <strong>{testimonial.nama_pengguna}:</strong> {testimonial.isi_testimoni}
+                    </p>
+                ))}
+              </div>
+              <input 
+                type="text" 
+                value={customerName} 
+                onChange={handleNameChange} 
+                style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #A68B5B', marginBottom: '10px' }} 
+                placeholder="Masukkan nama Anda..."
+              />
+              <textarea 
+                rows="4" 
+                value={review} 
+                onChange={handleReviewChange}
+                style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #A68B5B' }} 
+                placeholder="Tulis review Anda di sini..."
+              />
+              <button 
+                onClick={handleReviewSubmit} 
+                style={{ marginTop: '10px', padding: '10px 20px', backgroundColor: '#A68B5B', color: '#FAFAFA', border: 'none', borderRadius: '8px' }}
+              >
+                Kirim Review
+              </button>
             </Col>
           </Row>
         </Container>
