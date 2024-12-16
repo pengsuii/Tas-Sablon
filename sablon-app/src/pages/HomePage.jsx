@@ -82,7 +82,7 @@ const HomePage = () => {
               <p style={{ fontWeight: 'inherit', fontSize: '17px' }}>
                 Sablon Custom, Kualitas Premium - Buat Ceritamu Tertulis di Setiap Tas
               </p>
-              <a href="https://forms.gle/nd9iVMCNTuX1nPWc7" target="_blank" rel="noopener noreferrer">
+              <a href="https://forms.gle/kg9hD6JwoTMpeqoe6" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
                 <button
                   onMouseEnter={() => setIsHovered(true)} 
                   onMouseLeave={() => setIsHovered(false)}
@@ -146,7 +146,7 @@ const HomePage = () => {
                 <div style={{ flex: 1 }}>
                   <h3 style={{ fontWeight: 'inherit' }}>Custom Tote Bag</h3>
                   <p>Ekspresikan diri dengan tote bag custom yang stylish dan fungsional, dibuat khusus untuk Anda.</p>
-                  <button className="button-explore">
+                  <button className="button-explore" onClick={() => window.location.href='/categories#tote-bag'}>
                     EXPLORE TOTE BAG <FaArrowUpRightFromSquare />
                   </button>
                 </div>
@@ -158,7 +158,7 @@ const HomePage = () => {
                 <div style={{ flex: 1 }}>
                   <h3 style={{ fontWeight: 'inherit' }}>Custom Pouch</h3>
                   <p>Pouch multifungsi yang bisa disesuaikan dengan selera Anda. Praktis, elegan, dan penuh karakter!</p>
-                  <button className="button-explore">
+                  <button className="button-explore" onClick={() => window.location.href='/categories#pouch'}>
                     EXPLORE POUCH <FaArrowUpRightFromSquare />
                   </button>
                 </div>
