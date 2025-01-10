@@ -9,7 +9,7 @@ import cheapImg from '../assets/img/cheap.png';
 import qualityImg from '../assets/img/quality.png';
 import tokoImg from '../assets/img/toko.jpg';
 import { Container, Row, Col } from 'react-bootstrap';
-import { FaArrowUpRightFromSquare } from "react-icons/fa6";
+import { FaArrowUpRightFromSquare, FaTrash } from "react-icons/fa6";
 
 const HomePage = () => {
   const [isHovered, setIsHovered] = useState(false);
@@ -68,6 +68,28 @@ const HomePage = () => {
       setCustomerName('');
     })
     .catch(error => console.error('Error submitting review:', error));
+  };
+
+  const handleDeleteTestimonial = (nama_pengguna, isi_testimoni) => {
+    fetch(`http://localhost:3000/testimoni`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nama_pengguna, isi_testimoni }),
+    })
+    .then(response => {
+      if (!response.ok) {
+          return response.json().then(err => {
+              throw new Error(err.message || 'Terjadi kesalahan saat menghapus testimoni.');
+          });
+      }
+      setTestimonials(testimonials.filter(testimonial => 
+        !(testimonial.nama_pengguna === nama_pengguna && testimonial.isi_testimoni === isi_testimoni)
+      ));
+    })
+    .catch(error => {
+      console.error('Error deleting testimonial:', error);
+      alert(error.message);
+    });
   };
 
   return (
@@ -141,8 +163,8 @@ const HomePage = () => {
             </Col>
           </Row>
           <Row>
-            <Col style={{ display: 'flex', alignItems: 'center', padding: '20px' }}>
-              <div style={{ border: '1px solid #A68B5B', borderRadius: '8px', padding: '10px', flex: 1, display: 'flex', alignItems: 'center', marginLeft: '-150px', marginRight: '100px' }}>
+            <Col style={{ display: 'flex', alignItems: 'center', padding: '20px' }} className="category-item">
+              <div style={{ border: '1px solid #A68B5B', borderRadius: '8px', padding: '10px', flex: 1, display: 'flex', alignItems: 'center' }}>
                 <div style={{ flex: 1 }}>
                   <h3 style={{ fontWeight: 'inherit' }}>Custom Tote Bag</h3>
                   <p>Ekspresikan diri dengan tote bag custom yang stylish dan fungsional, dibuat khusus untuk Anda.</p>
@@ -153,8 +175,8 @@ const HomePage = () => {
                 <img src={totebagImg} alt="Custom Tote Bag" style={{ width: '150px', height: '150px', borderRadius: '8px', marginLeft: '5px', objectFit: 'cover' }} />
               </div>
             </Col>
-            <Col style={{ display: 'flex', alignItems: 'center', padding: '20px' }}>
-              <div style={{ border: '1px solid #A68B5B', borderRadius: '8px', padding: '10px', flex: 1, display: 'flex', alignItems: 'center', marginLeft: '100px', marginRight: '-150px' }}>
+            <Col style={{ display: 'flex', alignItems: 'center', padding: '20px' }} className="category-item">
+              <div style={{ border: '1px solid #A68B5B', borderRadius: '8px', padding: '10px', flex: 1, display: 'flex', alignItems: 'center' }}>
                 <div style={{ flex: 1 }}>
                   <h3 style={{ fontWeight: 'inherit' }}>Custom Pouch</h3>
                   <p>Pouch multifungsi yang bisa disesuaikan dengan selera Anda. Praktis, elegan, dan penuh karakter!</p>
@@ -235,10 +257,16 @@ const HomePage = () => {
                   scrollbarWidth: 'thin',
                   scrollbarColor: '#A68B5B transparent'
                 }} className="review-scroll">
-                {testimonials.map((testimonial, index) => (
-                    <p key={testimonial.id || index}>
-                        <strong>{testimonial.nama_pengguna}:</strong> {testimonial.isi_testimoni}
-                    </p>
+                {testimonials.map((testimonial) => (
+                    <div key={`${testimonial.nama_pengguna}-${testimonial.isi_testimoni}`} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <p>
+                            <strong>{testimonial.nama_pengguna}:</strong> {testimonial.isi_testimoni}
+                        </p>
+                        <FaTrash 
+                          onClick={() => handleDeleteTestimonial(testimonial.nama_pengguna, testimonial.isi_testimoni)} 
+                          style={{ cursor: 'pointer', color: 'red' }} 
+                        />
+                    </div>
                 ))}
               </div>
               <input 
