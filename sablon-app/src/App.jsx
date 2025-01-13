@@ -9,6 +9,7 @@ import Categories from "./pages/Categories"
 import About from "./pages/About"
 import Login from "./auth/login"
 import Dashboard from './pages/Dashboard';
+import Catalogue from "./pages/Catalogue";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -23,6 +24,7 @@ function App() {
       <Route path="/about" element={<About/>} />
       <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
       <Route path="/dashboard" element={<Dashboard isLoggedIn={isLoggedIn} />} />
+      <Route path="/catalogue" element={<Catalogue />} />
     </Routes>
     {location.pathname !== "/login" && <FooterComponent/>}
   </div>

@@ -2,6 +2,7 @@ const express = require('express');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 const port = 3000;
@@ -11,6 +12,9 @@ app.use(bodyParser.json());
 
 // Middleware untuk CORS
 app.use(cors());
+
+// Middleware untuk menyajikan file statis
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Konfigurasi koneksi ke database MySQL
 const db = mysql.createConnection({
@@ -103,6 +107,32 @@ app.delete('/testimoni', checkAdminLogin, (req, res) => {
             return res.status(404).json({ message: 'Testimoni tidak ditemukan.' });
         }
         res.status(200).json({ message: 'Testimoni berhasil dihapus.' });
+    });
+});
+
+// Rute untuk mengambil data dari tabel 'categories'
+app.get('/categories', (req, res) => {
+    const query = 'SELECT * FROM categories';
+    
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error fetching categories:', err);
+            return res.status(500).json({ error: err.message });
+        }
+        res.status(200).json(results);
+    });
+});
+
+// Rute untuk mengambil data dari tabel 'items'
+app.get('/items', (req, res) => {
+    const query = 'SELECT * FROM items';
+    
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error fetching items:', err);
+            return res.status(500).json({ error: err.message });
+        }
+        res.status(200).json(results);
     });
 });
 
