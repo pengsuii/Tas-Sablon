@@ -33,7 +33,7 @@ db.connect((err) => {
     console.log('Terhubung ke database MySQL');
 });
 
-let isAdminLoggedIn = false; // Variabel untuk menyimpan status login admin
+let isAdminLoggedIn = false;
 
 // Middleware untuk memeriksa apakah admin sudah login
 const checkAdminLogin = (req, res, next) => {
@@ -119,6 +119,7 @@ app.get('/categories', (req, res) => {
             console.error('Error fetching categories:', err);
             return res.status(500).json({ error: err.message });
         }
+        console.log('Categories fetched:', results); // Tambahkan log untuk hasil
         res.status(200).json(results);
     });
 });
