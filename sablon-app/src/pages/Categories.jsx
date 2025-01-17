@@ -1,5 +1,5 @@
 import '../dist/css/main.css';
-import { Container, Row, Col, Card } from 'react-bootstrap';
+import { Container, Row, Col, Card, ListGroup, Button } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,6 +19,14 @@ const Categories = () => {
 
   const handleCatalogueClick = () => {
     navigate('/catalogue');
+  };
+
+  const handleShowModal = (category) => {
+    // Implementasi handleShowModal
+  };
+
+  const handleDeleteCategory = (id) => {
+    // Implementasi handleDeleteCategory
   };
 
   const renderCards = () => {
